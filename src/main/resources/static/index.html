@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 320px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        input {
+            padding: 8px;
+            width: 70%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .result {
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Weather App</h2>
+
+    <input type="text" id="city" placeholder="Enter city (e.g. Dhaka)">
+    <br>
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    function getWeather() {
+        const city = document.getElementById("city").value || "Dhaka";
+
+        fetch(`http://localhost:8082/api/weather?city=${city}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("City not found or API error");
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("result").innerHTML = `
+                    <p><span class="label">Location:</span> ${data.location}</p>
+                    <p><span class="label">Temperature:</span> ${data.temperature} °C</p>
+                    <p><span class="label">Time:</span> ${data.time}</p>
+                `;
+            })
+            .catch(error => {
+                document.getElementById("result").innerHTML =
+                    `<p style="color:red;">${error.message}</p>`;
+            });
+    }
+</script>
+
+</body>
+</html>
